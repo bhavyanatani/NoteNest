@@ -8,6 +8,13 @@ const SignUp = (props) => {
     let navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validate password confirmation
+        if (credentials.password !== credentials.cpassword) {
+            props.showAlert("Passwords do not match!", "danger");
+            return;
+        }
+        
         const response = await fetch(`${host}/api/auth/createUser`, {
             method: "POST",
             headers: {
@@ -18,7 +25,8 @@ const SignUp = (props) => {
         const json = await response.json();
         if (json.success) {
             //redirect
-            localStorage.setItem('token', json.authtoken);
+            localStorage.setItem('token', json.authToken);
+            props.setIsAuthenticated(true);
             navigate("/");
             props.showAlert("Account Created Successfully!","success")
         }
